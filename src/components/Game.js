@@ -1,0 +1,38 @@
+import React, { useState } from 'react'
+import times from 'lodash/times'
+import { MAX_POS } from '../constant'
+import { getInitialTileList } from '../util/tile';
+import useMoveTile from '../hook/useMoveTile';
+import Tile from './Tile';
+
+export default function Game() {
+    const [tileList, setTileList] = useState(getInitialTileList);
+    // up, down, left, right
+    useMoveTile({ tileList, setTileList });
+
+    return (
+        <div className="game-container">
+            <div className="game-message">
+                <p></p>
+                <div className="lower">
+                    <a className="keep-playing-button">Keep playing</a>
+                    <a className="retry-button">Try again</a>
+                    <div className="score-sharing"></div>
+                </div>
+            </div>
+            <div className="grid-container">
+                { times(MAX_POS, index => (
+                    <div key={index} className="grid-row">
+                        { times(MAX_POS, index2 =>(
+                            <div key={index2} className="grid-cell"></div>
+                        ))}
+                    </div>
+                ))}
+
+            </div>
+            { tileList.map(item => (
+                <Tile key={item.id} {...item} />
+            ))}
+        </div>
+    )
+}
