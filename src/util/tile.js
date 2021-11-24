@@ -19,7 +19,7 @@ export function checkCollision(tileList, newtile) {
 let currentId = 0;
 export function makeTile(tileList) {
     let newtile;
-    while(!newtile || checkCollision(tileList, newtile) ) {
+    while(!newtile || (tileList && checkCollision(tileList, newtile))) {
         newtile = {
             id: currentId++,
             x: getRandomInteger(1, MAX_POS),

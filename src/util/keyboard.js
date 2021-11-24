@@ -1,7 +1,7 @@
 import hotkeys from "hotkeys-js";
 
 const observerMap = {}
-export function addKeyObserver(key, callback) {
+export function addKeyCallback(key, callback) {
     if(!observerMap[key]) {
         observerMap[key] = [];
         hotkeys(key, () => executeCallbacks(key));
@@ -9,7 +9,7 @@ export function addKeyObserver(key, callback) {
     observerMap[key].push(callback);
 }
 
-export function removeKeyObserver(key, callback) {
+export function removeKeyCallback(key, callback) {
     observerMap[key] = observerMap[key].filter(item => item !== callback);
 }
 

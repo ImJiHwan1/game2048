@@ -1,40 +1,43 @@
-import React, { useEffect } from "react"
-import { addKeyObserver, removeKeyObserver } from "../util/keyboard"
+import { useEffect } from "react"
+import { addKeyCallback, removeKeyCallback } from "../util/keyboard"
 import { makeTile, moveTile } from "../util/tile"
 
-export default function useMoveTile({ tileList, setTileList }) {
-    function moveAndAdd({x, y}) {
-        const newTileList = moveTile({tileList, x, y})
-        const newTile = makeTile(newTileList);
-        newTile.isNew = true;
-        newTileList.push(newTile);
-        setTileList(newTileList)
-    }
-
-    function moveUp() {
-        moveAndAdd({ x: 0, y: -1 })
-    }
-    function moveDown() {
-        moveAndAdd({ x: 0, y: 1 })
-    }
-    function moveLeft() {
-        moveAndAdd({ x: -1, y: 0 })
-    }
-    function moveRight() {
-        moveAndAdd({ x: 1, y: 0 })
-    }
-    
+export default function useMoveTile({ tileList, setTileList, setScore }) {
     useEffect(() => {
-        addKeyObserver('up', () => {});
-        addKeyObserver('down', () => {});
-        addKeyObserver('left', () => {});
-        addKeyObserver('right', () => {});
-
-        return () => {
-            removeKeyObserver('up', moveUp);
-            removeKeyObserver('down', moveDown);
-            removeKeyObserver('left', moveLeft);
-            removeKeyObserver('right', moveRight);
+        function moveAndAdd({ x, y }) {
+            const newTileList = moveTile({ tileList, x, y });
+            const newTile = makeTile(newTileList);
+            const score = newTileList.reduce(
+                (acc, item) => (item.isMerged ? acc + item.value : acc),
+                0,
+              );
+            setScore(v => v + score)
+          newTile.isNew = true;
+          newTileList.push(newTile);
+          setTileList(newTileList);
         }
-    });
+    
+        function moveUp() {
+          moveAndAdd({ x: 0, y: -1 });
+        }
+        function moveDown() {
+          moveAndAdd({ x: 0, y: 1 });
+        }
+        function moveLeft() {
+          moveAndAdd({ x: -1, y: 0 });
+        }
+        function moveRight() {
+          moveAndAdd({ x: 1, y: 0 });
+        }
+        addKeyCallback('up', moveUp);
+        addKeyCallback('down', moveDown);
+        addKeyCallback('left', moveLeft);
+        addKeyCallback('right', moveRight);
+        return () => {
+          removeKeyCallback('up', moveUp);
+          removeKeyCallback('down', moveDown);
+          removeKeyCallback('left', moveLeft);
+          removeKeyCallback('right', moveRight);
+        };
+      }, [tileList, setTileList]);
 }
